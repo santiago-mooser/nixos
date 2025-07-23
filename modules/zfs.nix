@@ -31,6 +31,33 @@
 
     # Extra pool import flags
     extraPools = [ "tank" ];
+
+    # Request encryption credentials for encrypted datasets
+    requestEncryptionCredentials = [ "tank" ];
+  };
+
+  # Systemd service to automatically unlock ZFS encrypted datasets using keyfile
+  systemd.services.zfs-load-key = {
+    description = "Load ZFS encryption keys";
+    wantedBy = [ "zfs-mount.service" ];
+    after = [ "zfs-import.target" ];
+    before = [ "zfs-mount.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeScript "zfs-load-key" ''
+        #!${pkgs.bash}/bin/bash
+
+        # Check if keyfile exists
+        if [ -f /root/.keys/zfs.key ]; then
+          # Load key for tank pool (adjust dataset name as needed)
+          ${pkgs.zfs}/bin/zfs load-key -a tank < /root/.keys/zfs.key
+        else
+          echo "Warning: ZFS keyfile not found at /root/.keys/zfs.key"
+          exit 1
+        fi
+      '';
+    };
   };
 
   # Install ZFS utilities

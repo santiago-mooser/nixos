@@ -25,8 +25,6 @@
         "tailscale"
         "systemd"
         "history-substring-search"
-        "zsh-autosuggestions"
-        "zsh-syntax-highlighting"
       ];
       theme = "robbyrussell";
       custom = "$HOME/.oh-my-zsh/custom";
@@ -34,6 +32,15 @@
 
     # Additional Zsh configuration
     shellInit = ''
+      # Source zsh plugins manually since they're not built-in oh-my-zsh plugins
+      if [ -f ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+        source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+      fi
+
+      if [ -f ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+        source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+      fi
+
       # Custom aliases
       alias ll='ls -alF'
       alias la='ls -A'
