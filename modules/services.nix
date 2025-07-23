@@ -10,17 +10,25 @@
   ];
   services.vscode-server.enable = true;
 
+  # Install VSCode with FHS environment and dependencies for extensions
+  environment.systemPackages = with pkgs; [
+    tailscale
+    (vscode.fhsWithPackages (ps: with ps; [
+      nodejs
+      python3
+      python3Packages.pip
+      python3Packages.isort
+      python3Packages.black
+      git
+    ]))
+  ];
+
   # Enable Tailscale
   services.tailscale = {
     enable = true;
     # Allow Tailscale to modify routing tables
     useRoutingFeatures = "both";
   };
-
-  # Install Tailscale package
-  environment.systemPackages = with pkgs; [
-    tailscale
-  ];
 
   # Enable systemd-resolved for better DNS handling with Tailscale
   services.resolved = {
