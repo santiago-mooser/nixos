@@ -10,7 +10,7 @@
   ];
 
   # 1Password integration
-  programs._1password-cli = {
+  programs._1password = {
     enable = true;
   };
 }
